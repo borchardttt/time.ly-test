@@ -1,0 +1,10 @@
+{
+  "/api": {
+    "target": "https://timelyapp.time.ly",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": "/api"
+    }
+  }
+}
