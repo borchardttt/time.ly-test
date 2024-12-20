@@ -9,6 +9,9 @@ module.exports = {
       colors: {
         primaryTimely: '#8dc360',
       },
+      fontFamily: {
+        sans: ['Montserrat', 'sans-serif'],
+      },
     },
   },
   plugins: [

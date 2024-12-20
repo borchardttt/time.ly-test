@@ -6,16 +6,20 @@ import { Component, OnInit } from '@angular/core';
 import { TimelyService } from '../services/timely.service';
 import { ExportService } from '../services/export/export.service';
 import { FilterService } from '../services/filter/filter.service';
-
+import {
+  ApiEvent,
+  CalendarInfo,
+  CalendarResponse,
+} from '../models/calendar.model';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css'],
 })
 export class CalendarComponent implements OnInit {
-  calendarInfo: any;
-  calendarEvents: any[] = [];
-  filteredEvents: any[] = [];
+  calendarInfo!: CalendarInfo;
+  calendarEvents: ApiEvent[] = [];
+  filteredEvents: ApiEvent[] = [];
   searchTitle: string = '';
   searchStartDate: string = '';
   searchTicketType: string = '';
@@ -44,9 +48,9 @@ export class CalendarComponent implements OnInit {
    */
   loadCalendarInfo(): void {
     this.timelyService.getCalendarInfo().subscribe(
-      (data) => {
-        this.calendarInfo = data;
-        this.loadCalendarEvents(this.calendarInfo.data.id);
+      (response: CalendarResponse) => {
+        this.calendarInfo = response.data;
+        this.loadCalendarEvents(this.calendarInfo.id);
       },
       (error) => {
         console.error('Error fetching calendar info:', error);
@@ -60,8 +64,7 @@ export class CalendarComponent implements OnInit {
    */
   loadCalendarEvents(calendarId: string): void {
     this.timelyService.getCalendarEvents(calendarId).subscribe(
-      (data) => {
-        console.log(data.data.items);
+      (data: { data: { items: ApiEvent[] } }) => {
         this.calendarEvents = data.data.items;
         this.filteredEvents = [...this.calendarEvents];
         this.totalEvents = this.filteredEvents.length;
@@ -119,6 +122,11 @@ export class CalendarComponent implements OnInit {
   get totalPages(): number {
     return Math.ceil(this.totalEvents / this.eventsPerPage);
   }
+
+  /*
+  Handle the export type when user select a option.
+  */
+
   handleExport(event: Event): void {
     const target = event.target as HTMLSelectElement;
     const option = target.value;
