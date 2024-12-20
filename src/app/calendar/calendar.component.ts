@@ -119,7 +119,23 @@ export class CalendarComponent implements OnInit {
   get totalPages(): number {
     return Math.ceil(this.totalEvents / this.eventsPerPage);
   }
-
+  handleExport(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    const option = target.value;
+    switch (option) {
+      case 'csv':
+        this.exportToCSV();
+        break;
+      case 'txt':
+        this.exportToTXT();
+        break;
+      case 'pdf':
+        this.exportToPDF();
+        break;
+      default:
+        console.error('Invalid export option');
+    }
+  }
   /** Exports filtered events to CSV. */
   exportToCSV(): void {
     this.exportService.exportToCSV(this.filteredEvents);

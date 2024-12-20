@@ -4,6 +4,12 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class FilterService {
+  /**
+   * Filters the events based on the specified criteria.
+   * @param events - An array of events to be filtered.
+   * @param filters - An object containing the filter criteria.
+   * @returns An array of events that match the filter criteria.
+   */
   filterEvents(events: any[], filters: any): any[] {
     return events.filter((event) => {
       const matchesTitle = event.title
