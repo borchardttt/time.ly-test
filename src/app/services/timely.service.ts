@@ -7,20 +7,15 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class TimelyService {
-  private readonly apiKey = environment.apiKey; // Sua chave da API
-  private readonly calendarUrl = environment.calendarUrl; // URL do calendário
-  private readonly baseApiUrl = '/api';
+  private readonly apiKey = environment.apiKey;
+  private readonly calendarUrl = environment.calendarUrl;
 
-  constructor(private http: HttpClient) {
-    console.log('API Key:', this.apiKey);
-    console.log('Calendar URL:', this.calendarUrl);
-    console.log('Base API URL:', this.baseApiUrl);
-  }
+  constructor(private http: HttpClient) {}
 
   getCalendarInfo(): Observable<any> {
     const headers = new HttpHeaders().set('X-Api-Key', this.apiKey || '');
 
-    return this.http.get(`${this.baseApiUrl}/calendars/info`, {
+    return this.http.get(`/api/calendars/info`, {
       headers,
       params: { url: this.calendarUrl },
     });
@@ -29,7 +24,7 @@ export class TimelyService {
   getCalendarEvents(calendarId: string): Observable<any> {
     const headers = new HttpHeaders().set('X-Api-Key', this.apiKey || '');
 
-    return this.http.get(`${this.baseApiUrl}/calendars/${calendarId}/events`, {
+    return this.http.get(`/api/calendars/${calendarId}/events`, {
       headers,
     });
   }
