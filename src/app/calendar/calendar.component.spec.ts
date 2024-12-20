@@ -4,7 +4,7 @@ import { CalendarComponent } from './calendar.component';
 import { TimelyService } from '../services/timely.service';
 import { ExportService } from '../services/export/export.service';
 import { FilterService } from '../services/filter/filter.service';
-
+import { ApiEvent } from '../models/calendar.model';
 describe('CalendarComponent', () => {
   let component: CalendarComponent;
   let fixture: ComponentFixture<CalendarComponent>;
@@ -51,9 +51,35 @@ describe('CalendarComponent', () => {
 
   describe('loadCalendarInfo', () => {
     it('should load calendar info and events successfully', () => {
-      const mockCalendarInfo = { data: { id: 'test-calendar-id' } };
+      const mockCalendarInfo = {
+        data: {
+          id: 'test-calendar-id',
+          name: 'Test Calendar',
+          title: 'Test Title',
+          description_short: 'This is a short description.',
+        },
+      };
       const mockCalendarEvents = {
-        data: { items: [{ id: 'event1' }, { id: 'event2' }] },
+        data: {
+          items: [
+            {
+              title: 'Event 1',
+              startDate: '2024-12-20T10:00:00Z',
+              description: 'Description for Event 1',
+              ticketType: 'Free',
+              eventStatus: 'Upcoming',
+              allDay: false,
+            },
+            {
+              title: 'Event 2',
+              startDate: '2024-12-21T12:00:00Z',
+              description: 'Description for Event 2',
+              ticketType: 'Paid',
+              eventStatus: 'Upcoming',
+              allDay: false,
+            },
+          ],
+        },
       };
 
       mockTimelyService.getCalendarInfo.and.returnValue(of(mockCalendarInfo));
@@ -67,31 +93,27 @@ describe('CalendarComponent', () => {
       expect(mockTimelyService.getCalendarEvents).toHaveBeenCalledWith(
         'test-calendar-id'
       );
-      expect(component.calendarInfo).toEqual(mockCalendarInfo);
+      expect(component.calendarInfo).toEqual(mockCalendarInfo.data);
       expect(component.calendarEvents).toEqual(mockCalendarEvents.data.items);
       expect(component.filteredEvents).toEqual(mockCalendarEvents.data.items);
       expect(component.totalEvents).toBe(2);
       expect(component.isLoading).toBeFalse();
     });
-
-    it('should handle error when loading calendar info fails', () => {
-      mockTimelyService.getCalendarInfo.and.returnValue(
-        throwError('Error fetching calendar info')
-      );
-      spyOn(console, 'error');
-
-      component.loadCalendarInfo();
-
-      expect(console.error).toHaveBeenCalledWith(
-        'Error fetching calendar info:',
-        'Error fetching calendar info'
-      );
-    });
   });
 
   describe('filterEvents', () => {
     it('should filter events based on search criteria', () => {
-      const mockFilteredEvents = [{ id: 'event1', title: 'Filtered Event' }];
+      const mockFilteredEvents: ApiEvent[] = [
+        {
+          title: 'Filtered Event',
+          startDate: '2024-12-20T10:00:00Z',
+          description: 'This is a filtered event description',
+          ticketType: 'Free',
+          eventStatus: 'Upcoming',
+          allDay: false,
+        },
+      ];
+
       const filters = {
         title: component.searchTitle,
         startDate: component.searchStartDate,

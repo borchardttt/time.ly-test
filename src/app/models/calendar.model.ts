@@ -25,5 +25,5 @@ export interface CalendarInfo {
  * Interface representing the structure of the calendar response.
  */
 export interface CalendarResponse {
-  data: CalendarInfo; // A propriedade `data` contém as informações do calendário
+  data: CalendarInfo;
 }
