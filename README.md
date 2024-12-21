@@ -52,3 +52,9 @@ ng serve
 ```
 
 The application will be available at [http://localhost:4200](http://localhost:4200).
+
+To run the tests, use the following command:
+
+```bash
+ng test
+```
