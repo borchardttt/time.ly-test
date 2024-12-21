@@ -21,7 +21,8 @@ export class ExportService {
    * @param data - An array of event objects to be exported.
    */
   exportToTXT(data: any[]): void {
-    const txtContent = this.convertToTXT(data);
+    const header = 'Title\tStart Date\tEnd Date\tDescription\n';
+    const txtContent = header + this.convertToTXT(data);
     const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     this.downloadFile(url, 'events.txt');
@@ -33,12 +34,42 @@ export class ExportService {
    */
   exportToPDF(data: any[]): void {
     const doc = new jsPDF();
-    doc.text('Events List', 14, 16);
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 14;
+    const maxWidth = pageWidth - margin * 2;
+    const lineHeight = 10;
     let y = 30;
+
+    doc.setFontSize(16);
+    doc.text('Events List', margin, 16);
+
     data.forEach((event) => {
-      doc.text(`${event.title} - ${event.start_datetime}`, 14, y);
-      y += 10;
+      if (y + lineHeight > doc.internal.pageSize.getHeight() - margin) {
+        doc.addPage();
+        y = margin;
+      }
+
+      const titleLines = doc.splitTextToSize(event.title, maxWidth);
+      doc.setFontSize(12);
+      titleLines.forEach((line: string) => {
+        if (y + lineHeight > doc.internal.pageSize.getHeight() - margin) {
+          doc.addPage();
+          y = margin;
+        }
+        doc.text(line, margin, y);
+        y += lineHeight;
+      });
+
+      const datetime = `Start: ${event.start_datetime}`;
+      if (y + lineHeight > doc.internal.pageSize.getHeight() - margin) {
+        doc.addPage();
+        y = margin;
+      }
+      doc.setFontSize(10);
+      doc.text(datetime, margin, y);
+      y += lineHeight;
     });
+
     doc.save('events.pdf');
   }
 
@@ -71,7 +102,7 @@ export class ExportService {
     return data
       .map(
         (event) =>
-          `${event.title} - ${event.start_datetime} - ${event.description_short}`
+          `${event.title}\t${event.start_datetime}\t${event.end_datetime}\t${event.description_short}`
       )
       .join('\n');
   }
