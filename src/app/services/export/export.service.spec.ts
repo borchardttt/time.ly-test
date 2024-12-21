@@ -53,7 +53,9 @@ describe('ExportService', () => {
 
       expect(spyDownload).toHaveBeenCalled();
       const txtContent = service['convertToTXT'](mockData);
-      expect(txtContent).toContain('Event 1 - 2024-12-01 - Description 1');
+      expect(txtContent).toContain(
+        'Event 1\t2024-12-01\t2024-12-02\tDescription 1'
+      );
     });
   });
 
@@ -90,7 +92,7 @@ describe('ExportService', () => {
 
       const txt = service['convertToTXT'](mockData);
 
-      expect(txt).toBe('Event 1 - 2024-12-01 - Description 1');
+      expect(txt).toBe('Event 1\t2024-12-01\t2024-12-02\tDescription 1');
     });
   });
 

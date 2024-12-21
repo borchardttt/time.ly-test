@@ -12,20 +12,36 @@ export class TimelyService {
 
   constructor(private http: HttpClient) {}
 
-  getCalendarInfo(): Observable<any> {
-    const headers = new HttpHeaders().set('X-Api-Key', this.apiKey || '');
+  /**
+   * Fetches calendar information.
+   * @returns Observable containing calendar data.
+   */
 
-    return this.http.get(`/api/calendars/info`, {
+  getCalendarInfo(): Observable<any> {
+    const headers = this.createHeaders();
+    const params = { url: this.calendarUrl };
+
+    return this.http.get<any>(`/api/calendars/info`, { headers, params });
+  }
+
+  /**
+   * Fetches events for a specific calendar.
+   * @param calendarId ID of the calendar.
+   * @returns Observable containing calendar events.
+   */
+  getCalendarEvents(calendarId: string): Observable<any> {
+    const headers = this.createHeaders();
+
+    return this.http.get<any>(`/api/calendars/${calendarId}/events`, {
       headers,
-      params: { url: this.calendarUrl },
     });
   }
 
-  getCalendarEvents(calendarId: string): Observable<any> {
-    const headers = new HttpHeaders().set('X-Api-Key', this.apiKey || '');
-
-    return this.http.get(`/api/calendars/${calendarId}/events`, {
-      headers,
-    });
+  /**
+   * Creates and returns the necessary headers for HTTP requests.
+   * @returns An instance of HttpHeaders with the configured headers.
+   */
+  private createHeaders(): HttpHeaders {
+    return new HttpHeaders().set('X-Api-Key', this.apiKey || '');
   }
 }
